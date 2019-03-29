@@ -151,16 +151,24 @@ void fdt_print(fdt *deptree)
 
     int i, j;
 
+    printf("Max capacity = %d\n", deptree->maxfiles);
+
     if (deptree->nfiles == 0) {
         printf("Empty dependency tree\n");
         return ;
     }
 
+    printf("Files:\n");
+    for (i = 0; i < deptree->nfiles; i++) {
+        printf("%d. %s\n", i + 1, deptree->files[i]);
+    }
+
+    printf("Dependencies:\n");
     for (i = 0; i < deptree->nfiles; i++) {
         printf("%s -> ", deptree->files[i]);
         for (j = 0; j < deptree->maxfiles; j++) {
             if ((deptree->depgraph[i])[j] == 1) {
-                printf("%s ", deptree->files[j]);
+                printf("%s, ", deptree->files[j]);
             }
         }
         printf("\n");
