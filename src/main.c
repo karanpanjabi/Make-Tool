@@ -10,13 +10,13 @@ int main(void)
     fdt *dt;
     int r;
     char *s = "filedeptree.h";
-    char *f[3];
+    char *f[4];
 
     f[0] = s;
     f[1] = NULL;
 
     // test 1
-    dt = fdt_create(10);
+    dt = fdt_create(3);
     if (dt == NULL) {
         printf("Create returned NULL\n");
         exit(1);
@@ -45,6 +45,17 @@ int main(void)
     f[2] = NULL;
 
     r = fdt_addfile(dt, "filedeptree.c", f);
+    if (r != 0) {
+        printf("%d: did not add file successfully\n", r);
+    }
+
+    fdt_print(dt);
+
+    // test 5: check for deptree full
+    f[2] = "filedeptree.c";
+    f[3] = NULL;
+
+    r = fdt_addfile(dt, "someotherefile.c", f);
     if (r != 0) {
         printf("%d: did not add file successfully\n", r);
     }
