@@ -3,12 +3,15 @@
 
 #include "filedeptree.h"
 
+#define MAXFILES 3
+
 
 int main(void)
 {
 
     fdt *dt;
     int r;
+    int i;
     char *s = "filedeptree.h";
     char *f[4];
 
@@ -16,7 +19,7 @@ int main(void)
     f[1] = NULL;
 
     // test 1
-    dt = fdt_create(3);
+    dt = fdt_create(MAXFILES);
     if (dt == NULL) {
         printf("Create returned NULL\n");
         exit(1);
@@ -61,6 +64,15 @@ int main(void)
     }
 
     fdt_print(dt);
+
+    //test 6: test fdt_getimmediatedependants
+    fdt_getimmediatedependants(dt, "filedeptree.c", f);
+    printf("dependants of %s are:\n", "filedeptree.c");
+    i = 0;
+    while (f[i] != NULL) {
+        printf("%s\n", f[i]);
+        i++;
+    }
 
     r = fdt_delete(dt);
 
