@@ -94,6 +94,10 @@ int fdt_addfile(fdt *deptree, const char *fname, char **depfiles)
     while (temp != NULL) {
         int x;
         x = fdt_getfileidbyname(deptree, temp);
+        if (x == -1) {
+            free(deps);
+            return 2;
+        }
         deps[x] = 1;
         temp = depfiles[i++];
     }
@@ -168,7 +172,7 @@ void fdt_print(fdt *deptree)
         printf("%s -> ", deptree->files[i]);
         for (j = 0; j < deptree->maxfiles; j++) {
             if ((deptree->depgraph[i])[j] == 1) {
-                printf("%s, ", deptree->files[j]);
+                printf("%s; ", deptree->files[j]);
             }
         }
         printf("\n");
@@ -177,7 +181,7 @@ void fdt_print(fdt *deptree)
 }
 
 
-void fdt_getdependents(fdt *deptree, const char *fname, char **deps)
+void fdt_getimmediatedependents(fdt *deptree, const char *fname, char **deps)
 {
 
     int i;
