@@ -43,12 +43,19 @@ fdt *fdt_create(int nfiles)
 
     deptree->files = (char **)malloc(sizeof(char *) * nfiles);
     if (deptree->files == NULL) {
+        free(deptree->files);
         free(deptree);
+        return NULL;
+    }
+
+    deptree->cmds = (char **)malloc(sizeof(char *) * nfiles);
+    if (deptree->files == NULL) {
         return NULL;
     }
 
     deptree->depgraph = (int **)malloc(sizeof(int *) * nfiles);
     if (deptree->depgraph == NULL) {
+        free(deptree->cmds);
         free(deptree->files);
         free(deptree);
         return NULL;
@@ -60,6 +67,7 @@ fdt *fdt_create(int nfiles)
             while (--i > -1) {
                 free(deptree->depgraph[i]);
             }
+            free(deptree->cmds);
             free(deptree->files);
             free(deptree);
             return NULL;
@@ -71,12 +79,15 @@ fdt *fdt_create(int nfiles)
 }
 
 
-int fdt_addfile(fdt *deptree, const char *fname, char **depfiles)
+int fdt_addfile(fdt *deptree, const char *fname, const char *cmd, char **depfiles)
 {
 
     int len, i;
     int *deps;
     char *temp;
+
+    if (fname == NULL)
+        return 4;
 
     if (depfiles == NULL)
         temp = NULL;
@@ -109,14 +120,24 @@ int fdt_addfile(fdt *deptree, const char *fname, char **depfiles)
     }
 
     len = sizeof(char) * (strlen(fname) + 1);
-
     deptree->files[deptree->nfiles] = (char *)malloc(len);
     if (deptree->files[deptree->nfiles] == NULL) {
         free(deps);
         return 1;
     }
-
     strncpy(deptree->files[deptree->nfiles], fname, len);
+
+    if (cmd == NULL) {
+        cmd = "\0";
+    }
+    len = sizeof(char) * (strlen(cmd) + 1);
+    deptree->cmds[deptree->nfiles] = (char *)malloc(len);
+    if (deptree->files[deptree->nfiles] == NULL) {
+        free(deps);
+        free(deptree->files[deptree->nfiles]);
+        return 1;
+    }
+    strncpy(deptree->cmds[deptree->nfiles], cmd, len);
 
     for (i = 0; i < deptree->maxfiles; i++) {
         (deptree->depgraph[deptree->nfiles])[i] = deps[i];
@@ -168,6 +189,7 @@ void fdt_print(fdt *deptree)
     printf("Files:\n");
     for (i = 0; i < deptree->nfiles; i++) {
         printf("%d. %s\n", i + 1, deptree->files[i]);
+        printf("    %s\n", deptree->cmds[i]);
     }
 
     printf("Dependencies:\n");
@@ -184,7 +206,7 @@ void fdt_print(fdt *deptree)
 }
 
 
-void fdt_getimmediatedependents(fdt *deptree, const char *fname, char **deps)
+void fdt_getimmediatedependants(fdt *deptree, const char *fname, char **deps)
 {
 
     int i;
@@ -233,5 +255,20 @@ int fdt_getfileidbyname(fdt *deptree, const char *name)
     }
 
     return -1;
+
+}
+
+
+char *fdt_getfilecmd(fdt *deptree, const char *fname)
+{
+
+    int id;
+
+    id = fdt_getfileidbyname(deptree, fname);
+
+    if (id != -1)
+        return deptree->cmds[id];
+    else
+        return NULL;
 
 }
