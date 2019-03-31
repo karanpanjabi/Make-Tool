@@ -28,7 +28,7 @@ int main(void)
     fdt_print(dt);
 
     // test 2
-    r = fdt_addfile(dt, s, NULL);
+    r = fdt_addfile(dt, s, NULL,NULL);
     if (r != 0) {
         printf("%d: did not add file successfully\n", r);
     }
@@ -36,7 +36,7 @@ int main(void)
     fdt_print(dt);
 
     // test 3
-    r = fdt_addfile(dt, "main.c", f);
+    r = fdt_addfile(dt, "main.c", "gcc1",f);
     if (r != 0) {
         printf("%d: did not add file successfully\n", r);
     }
@@ -47,7 +47,7 @@ int main(void)
     f[1] = "main.c";
     f[2] = NULL;
 
-    r = fdt_addfile(dt, "filedeptree.c", f);
+    r = fdt_addfile(dt, "filedeptree.c", "gcc2", f);
     if (r != 0) {
         printf("%d: did not add file successfully\n", r);
     }
@@ -58,7 +58,7 @@ int main(void)
     f[2] = "filedeptree.c";
     f[3] = NULL;
 
-    r = fdt_addfile(dt, "someotherefile.c", f);
+    r = fdt_addfile(dt, "someotherefile.c", "gcc3",f);
     if (r != 0) {
         printf("%d: did not add file successfully\n", r);
     }
@@ -73,6 +73,18 @@ int main(void)
         printf("%s\n", f[i]);
         i++;
     }
+
+    //test 7: test fdt_getfilecmd
+    s = fdt_getfilecmd(dt, "someotherfile.c");
+    if (s == NULL)
+        printf("not found\n");
+    else
+        printf("%s\n", s);
+    s = fdt_getfilecmd(dt, "filedeptree.c");
+    if (s == NULL)
+        printf("not found\n");
+    else
+        printf("%s\n", s);
 
     r = fdt_delete(dt);
 
