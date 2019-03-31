@@ -111,8 +111,10 @@ int fdt_addfile(fdt *deptree, const char *fname, char **depfiles)
     len = sizeof(char) * (strlen(fname) + 1);
 
     deptree->files[deptree->nfiles] = (char *)malloc(len);
-    if (deptree->files[deptree->nfiles] == NULL)
+    if (deptree->files[deptree->nfiles] == NULL) {
+        free(deps);
         return 1;
+    }
 
     strncpy(deptree->files[deptree->nfiles], fname, len);
 
