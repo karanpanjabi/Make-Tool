@@ -104,7 +104,8 @@ int fdt_addfile(fdt *deptree, const char *fname, char **depfiles)
 
 
     if (deptree->nfiles == deptree->maxfiles) {
-        return 2;
+        free(deps);
+        return 3;
     }
 
     len = sizeof(char) * (strlen(fname) + 1);
