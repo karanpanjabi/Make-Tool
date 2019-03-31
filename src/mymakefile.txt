@@ -1,0 +1,6 @@
+a.h:
+gcc1
+a.c: a.h
+gcc2
+main.c: a.h a.c
+gcc3
