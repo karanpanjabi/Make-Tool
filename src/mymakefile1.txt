@@ -1,6 +1,6 @@
-filedeptree:
+filedeptree.c:
 
 make.c: filedeptree.c
-gcc -c bla
+gcc -c blabla
 main1.c: make.c filedeptree.c
-gcc blabla
+gcc -c blabla

@@ -284,7 +284,7 @@ int getFileMTime(const char *fname)
 
     // printf("%s %d %d\n", fname, finfo.st_size, finfo.st_mtime);
 
-    if(exists == 0)
+    if(exists == -1)
     {
         //File not found or doesn't exist
         printf("File %s not found\n", fname);
@@ -318,6 +318,6 @@ void execTree(fdt *deptree, int i)
     }
 
     //execute cmd for the file
-    printf("%s : %s\n", deptree->files[i], deptree->cmds[i]);
+    printf("Executing for %s : %s\n", deptree->files[i], deptree->cmds[i]);
     // system(deptree->cmds[i]);
 }
