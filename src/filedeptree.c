@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "filedeptree.h"
 
 
@@ -179,7 +183,7 @@ void fdt_print(fdt *deptree)
 
     int i, j;
 
-    printf("Max capacity = %d\n", deptree->maxfiles);
+    printf("------\nMax capacity = %d\n", deptree->maxfiles);
 
     if (deptree->nfiles == 0) {
         printf("Empty dependency tree\n");
@@ -202,7 +206,7 @@ void fdt_print(fdt *deptree)
         }
         printf("\n");
     }
-
+    printf("------\n");
 }
 
 
@@ -271,4 +275,49 @@ char *fdt_getfilecmd(fdt *deptree, const char *fname)
     else
         return NULL;
 
+}
+
+int getFileMTime(const char *fname)
+{
+    struct stat finfo;
+    int exists = stat(fname, &finfo);
+
+    // printf("%s %d %d\n", fname, finfo.st_size, finfo.st_mtime);
+
+    if(exists == 0)
+    {
+        //File not found or doesn't exist
+        printf("File %s not found\n", fname);
+        return -1;
+    }
+
+    return finfo.st_mtime;
+}
+
+
+void execTree(fdt *deptree, int i)
+{
+
+    //check timestamp of current node
+    //compare with dependencies
+    //visit dependencies if their timestamp is greater
+    char *fname = deptree->files[i];
+    int mtime = getFileMTime(fname);
+    if(mtime == -1)
+    {
+        return;
+    }
+
+
+    for(int j=0; j < deptree->maxfiles; j++)
+    {
+        if ((deptree->depgraph[i])[j] == 1 && getFileMTime(deptree->files[j]) > mtime) 
+        {
+            execTree(deptree, j);
+        }
+    }
+
+    //execute cmd for the file
+    printf("%s : %s\n", deptree->files[i], deptree->cmds[i]);
+    // system(deptree->cmds[i]);
 }

@@ -13,7 +13,7 @@ struct file_t {
 typedef struct file_t file;
 
 
-void parse(FILE *input)
+fdt * parse(FILE *input)
 {
 
     fdt *deptree;
@@ -160,4 +160,5 @@ void parse(FILE *input)
 
     fdt_print(deptree);
 
+    return deptree;
 }

@@ -2,7 +2,8 @@
 #define MAKE_H 0
 
 #include <stdio.h>
+#include "filedeptree.h"
 
-void parse(FILE *input);
+fdt * parse(FILE *input);
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "make.h"
+#include "filedeptree.h"
 
 
 int main(int argc, char *argv[])
@@ -19,7 +20,9 @@ int main(int argc, char *argv[])
 
     f = fopen(argv[1], "r");
 
-    parse(f);
+    fdt *deptree = parse(f);
+
+    execTree(deptree, deptree->nfiles - 1);
 
     fclose(f);
 

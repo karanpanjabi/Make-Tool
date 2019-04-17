@@ -18,5 +18,6 @@ void fdt_getimmediatedependants(fdt *deptree, const char *fname, char **deps);
 void fdt_print(fdt *deptree);
 int fdt_getfileidbyname(fdt *deptree, const char *name);
 char *fdt_getfilecmd(fdt *deptree, const char *fname);
+void execTree(fdt *deptree, int i);
 
 #endif
