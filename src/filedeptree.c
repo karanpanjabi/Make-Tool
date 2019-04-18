@@ -297,27 +297,39 @@ int getFileMTime(const char *fname)
 
 void execTree(fdt *deptree, int i)
 {
-
-    //check timestamp of current node
     //compare with dependencies
-    //visit dependencies if their timestamp is greater
+    //visit all dependencies 
     char *fname = deptree->files[i];
     int mtime = getFileMTime(fname);
-    if(mtime == -1)
-    {
-        return;
-    }
+    // if(mtime == -1)
+    // {
+    //     return; //don't stop if src file isn't present
+    // }
 
 
     for(int j=0; j < deptree->maxfiles; j++)
     {
-        if ((deptree->depgraph[i])[j] == 1 && getFileMTime(deptree->files[j]) > mtime) 
+        if ((deptree->depgraph[i])[j] == 1)
         {
             execTree(deptree, j);
         }
     }
 
-    //execute cmd for the file
-    printf("Executing for %s : %s\n", deptree->files[i], deptree->cmds[i]);
-    // system(deptree->cmds[i]);
+    //execute cmd for the file, if any of dependencies' timestamp is greater than current node's
+
+    int isGreater = 0;
+    for(int j=0; j < deptree->maxfiles; j++)
+    {
+        if ((deptree->depgraph[i])[j] == 1 && getFileMTime(deptree->files[j]) > mtime)
+        {
+            isGreater = 1;
+            break;
+        }
+    }
+
+    if(isGreater)
+    {
+        printf("Executing for %s : %s\n", deptree->files[i], deptree->cmds[i]);
+        system(deptree->cmds[i]);
+    }
 }

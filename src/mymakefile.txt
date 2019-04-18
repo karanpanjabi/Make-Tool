@@ -1,6 +1,6 @@
-filedeptree:
+filedeptree.c:
 
 make.c: filedeptree.c
-gcc -c bla
+echo "make.c
 main1.c: make.c filedeptree.c
-gcc blabla
+echo "no"
